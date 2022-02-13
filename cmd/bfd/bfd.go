@@ -41,7 +41,6 @@ const (
 type options struct {
 	TLS    bool
 	CaFile string
-	Port   int
 	Host   string
 }
 
@@ -76,8 +75,7 @@ func newRootCmd() *cobra.Command {
 		},
 	}
 
-	rootCmd.PersistentFlags().StringVarP(&opts.Host, "host", "", "127.0.0.1", "GRPC host")
-	rootCmd.PersistentFlags().IntVarP(&opts.Port, "port", "", api.GRPC_PORT, "GRPC port")
+	rootCmd.PersistentFlags().StringVarP(&opts.Host, "grpc-socket", "s", "/tmp/bfdd.sock", "GRPC host")
 	rootCmd.PersistentFlags().BoolVarP(&opts.TLS, "tls", "", false, "Enable TLS for grpc")
 	rootCmd.PersistentFlags().StringVarP(&opts.CaFile, "tls-ca-file", "", "", "The file containing the CA root cert")
 
@@ -525,11 +523,7 @@ func newClient(ctx context.Context, opts *options) (api.BfdApiClient, context.Ca
 		grpcOpts = append(grpcOpts, grpc.WithInsecure())
 	}
 
-	target := net.JoinHostPort(opts.Host, strconv.Itoa(opts.Port))
-
-	if target == "" {
-		target = ":" + strconv.Itoa(api.GRPC_PORT)
-	}
+  target := "unix://" + opts.Host
 
 	cc, cancel := context.WithTimeout(ctx, time.Second)
 	conn, err := grpc.DialContext(cc, target, grpcOpts...)

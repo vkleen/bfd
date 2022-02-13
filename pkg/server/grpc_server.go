@@ -42,7 +42,7 @@ func NewBfdApiServer(server BfdServerApi, grpc *grpc.Server) *BfdApiServer {
 }
 
 func (a *BfdApiServer) ServeApi(address string) error {
-	lis, err := net.Listen("tcp", address)
+	lis, err := net.Listen("unix", address)
 
 	if err != nil {
 		return err

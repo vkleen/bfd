@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"time"
 	"context"
-	"strconv"
 
 	"google.golang.org/grpc"
 	"github.com/golang/glog"
@@ -106,7 +105,7 @@ func (s *BfdApp) NewGrpcServer() *grpc.Server {
 	return grpc.NewServer(grpcOpts...)
 }
 
-func (s *BfdApp) Start() {
+func (s *BfdApp) Start(grpcSocket string) {
 	// init our default random source
 	rand.Seed(time.Now().UnixNano())
 
@@ -116,7 +115,7 @@ func (s *BfdApp) Start() {
 
 	s.api = server.NewBfdApiServer(s.srv, s.grpc)
 
-	go s.api.ServeApi("127.0.0.1:" + strconv.Itoa(api.GRPC_PORT))
+	go s.api.ServeApi(grpcSocket)
 
 	/*if err != nil {
 		glog.Errorf("Error starting server: %s", err.Error())

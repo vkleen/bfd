@@ -45,7 +45,7 @@ func main() {
 	}
 
 	app := app.NewBfdApp()
-	app.Start()
+	app.Start(options.GrpcSocket)
 
 	if err := app.LoadConfig(options.Config); err != nil {
 		glog.Errorf("%s", err.Error())
