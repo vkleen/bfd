@@ -264,13 +264,27 @@ func (p *Peer) ApplyLocalState(updates []PeerStateUpdate) {
 }
 
 func (p *Peer) ApplyRemoteState(updates []PeerStateUpdate) {
+  sessionStateUpdated := false
+
 	p.mgmt(func() error {
 		p.Lock()
 		defer p.Unlock()
+    old_state := p.remote
 		p.remote = p.remote.Clone(updates)
+
+    if old_state.sessionState != p.remote.sessionState {
+      sessionStateUpdated = true
+    }
 
 		return nil
 	})
+
+  if sessionStateUpdated {
+    p.NotifyWatchers(&api.PeerStateResponse{
+      Local:  p.GetLocal().ToApi(),
+      Remote: p.GetRemote().ToApi(),
+    })
+  }
 }
 
 func (p *Peer) Enable() {
