@@ -8,10 +8,8 @@ import (
 	"net"
 	"strconv"
 	"sync"
-	"syscall"
 
 	"github.com/golang/glog"
-	"golang.org/x/net/ipv4"
 
 	"github.com/Thoro/bfd/pkg/api"
 	"github.com/Thoro/bfd/pkg/packet/bfd"
@@ -138,9 +136,6 @@ func (s *BfdServer) AddPeer(api_peer *api.Peer) (*Peer, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	ttlConn := ipv4.NewConn(conn)
-	ttlConn.SetTTL(255)
 
 	peer.conn = conn
 	peer.Unlock()
@@ -284,15 +279,15 @@ func (s *BfdServer) Listen(address string) error {
 	}
 
 	// Setup so that we receive the TTL of incoming packets
-	file, err := conn.File()
+	//file, err := conn.File()
 
-	if err != nil {
-		return err
-	}
+	//if err != nil {
+	//	return err
+	//}
 
-	syscall.SetsockoptInt(int(file.Fd()), syscall.IPPROTO_IP, syscall.IP_RECVTTL, 1)
+	//syscall.SetsockoptInt(int(file.Fd()), syscall.IPPROTO_IP, syscall.IP_RECVTTL, 1)
 
-	file.Close()
+	//file.Close()
 
 	s.conns[address] = &listener{
 		conn,
@@ -464,11 +459,11 @@ func (s *BfdServer) readIncomingPacket(conn Connection, b, oob []byte) error {
 		return err
 	}
 
-	ttl := oob[16]
+	//ttl := oob[16]
 
-	if ttl != 255 {
-		return ErrInvalidTTL
-	}
+	//if ttl != 255 {
+	//	return ErrInvalidTTL
+	//}
 
 	pkt := &bfd.ControlPacket{}
 
