@@ -94,7 +94,6 @@ func NewBfdServer() *BfdServer {
 }
 
 func (s *BfdServer) AddPeer(api_peer *api.Peer) (*Peer, error) {
-	var address string
 	var err error
 
 	if api_peer.DetectMultiplier == 0 {
@@ -106,11 +105,12 @@ func (s *BfdServer) AddPeer(api_peer *api.Peer) (*Peer, error) {
 	//  49152 through 65535
 	sourcePort := 49152 + int(rand.Intn(65535-49152))
 
-	port := BFD_PORT
+  udpAddr, err := net.ResolveUDPAddr("udp", api_peer.Address)
+	if err != nil {
+		return nil, err
+	}
 
-	address = api_peer.Address
-
-	peer, err := NewPeer(net.ParseIP(address), port)
+	peer, err := NewPeer(udpAddr)
 
 	if err != nil {
 		return nil, err

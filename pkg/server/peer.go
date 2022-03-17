@@ -62,14 +62,9 @@ type mgmtOp struct {
 	f     func() error
 }
 
-func NewPeer(address net.IP, port int) (*Peer, error) {
-
+func NewPeer(address *net.UDPAddr) (*Peer, error) {
 	if address == nil {
 		return nil, ErrInvalidAddress
-	}
-
-	if port < 1 || port > 65535 {
-		return nil, ErrInvalidPort
 	}
 
 	id, _ := uuid.NewV4()
@@ -77,10 +72,7 @@ func NewPeer(address net.IP, port int) (*Peer, error) {
 
 	p := &Peer{
 		uuid: uuidBytes,
-		Address: &net.UDPAddr{
-			IP:   address,
-			Port: port,
-		},
+		Address: address,
 
 		// Initialize with a long time - will be updated by the config
 		ticker: time.NewTimer(time.Duration(5) * time.Hour),
