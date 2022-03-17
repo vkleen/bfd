@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"net"
 	"strconv"
-	"strings"
 	"sync"
 	"syscall"
 
@@ -109,18 +108,7 @@ func (s *BfdServer) AddPeer(api_peer *api.Peer) (*Peer, error) {
 
 	port := BFD_PORT
 
-	if strings.Contains(api_peer.Address, ":") {
-		parts := strings.Split(api_peer.Address, ":")
-		address = parts[0]
-
-		port, err = strconv.Atoi(parts[1])
-
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		address = api_peer.Address
-	}
+	address = api_peer.Address
 
 	peer, err := NewPeer(net.ParseIP(address), port)
 
