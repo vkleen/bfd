@@ -10,7 +10,7 @@ type Config struct {
 }
 
 type Peer struct {
-	Name				string `yaml:"name"`
+	Address				string `yaml:"address"`
 	Port     			int16  `yaml:"port"`
 	Interval 			int    `yaml:"interval"`  			// target interval in ms
 	DetectionMultiplier int    `yaml:"detectionMultiplier"`

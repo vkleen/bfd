@@ -48,10 +48,10 @@ func (s *BfdApp) LoadConfig(path string) error {
 	}
 
 	// Update the live config
-	for ip, settings := range conf.Peers {
+	for name, settings := range conf.Peers {
 		peer, err := s.srv.AddPeer(&api.Peer{
-			Name: settings.Name,
-			Address: ip,
+			Name: name,
+			Address: settings.Address,
 			DesiredMinTxInterval: uint32(settings.Interval),
 			RequiredMinRxInterval: uint32(settings.Interval),
 			DetectMultiplier: uint32(settings.DetectionMultiplier),
